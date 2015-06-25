@@ -64,6 +64,14 @@ func (m *Model) ComputeDistance() {
 	}
 }
 
+func (m *Model) Call() {
+	m.trace(len(m.y)+1, len(m.x)+1)
+}
+
+func (m *Model) trace(i, j int) {
+
+}
+
 func main() {
 	x := "CATTAG"
 	y := "CAG"
