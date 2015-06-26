@@ -8,16 +8,17 @@ import (
 )
 
 type Variant struct {
+	pos int
 	ref string
 	alt string
 }
 
-func NewVariant(ref, alt string) *Variant {
-	return &Variant{ref, alt}
+func NewVariant(pos int, ref, alt string) *Variant {
+	return &Variant{pos, ref, alt}
 }
 
 func (v *Variant) Print() {
-	fmt.Println(v.ref, "|", v.alt)
+	fmt.Println(v.pos, ": ", v.ref, "|", v.alt)
 }
 
 // Alignment
@@ -71,7 +72,7 @@ func (a *Alignment) Call() ([]*Variant, bool, bool, error) {
 		if a.X[i] != a.Y[i] {
 			if a.X[i] != '-' && a.Y[i] != '-' {
 				// SNP
-				variants = append(variants, NewVariant(string(a.X[i]), string(a.Y[i])))
+				variants = append(variants, NewVariant(i, string(a.X[i]), string(a.Y[i])))
 			} else if a.X[i] == '-' {
 				if a.X[i-1] != '-' && a.X[i-1] != a.Y[i-1] {
 					return variants, PIVb, PIVe, errors.New("Invalid indel configuration: " + "\n\t" + a.X[i-1:] + "\n\t" + a.Y[i-1:])
@@ -80,7 +81,7 @@ func (a *Alignment) Call() ([]*Variant, bool, bool, error) {
 				cur_var += string(a.Y[i-1])
 				if a.X[i+1] != '-' {
 					cur_var += string(a.Y[i])
-					variants = append(variants, NewVariant(string(cur_var[0]), cur_var))
+					variants = append(variants, NewVariant(i-len(cur_var)+1, string(cur_var[0]), cur_var))
 					cur_var = ""
 				}
 			} else if a.Y[i] == '-' {
@@ -91,7 +92,7 @@ func (a *Alignment) Call() ([]*Variant, bool, bool, error) {
 				cur_var += string(a.X[i-1])
 				if a.Y[i+1] != '-' {
 					cur_var += string(a.X[i])
-					variants = append(variants, NewVariant(cur_var, string(cur_var[0])))
+					variants = append(variants, NewVariant(i-len(cur_var)+1, cur_var, string(cur_var[0])))
 					cur_var = ""
 				}
 			}
@@ -271,12 +272,12 @@ func main() {
 	// x := "CTTAG"
 	// x := "CATTAG"
 	// y := "CAG"
-	// x := "CATGATG"
-	// y := "CATG"
+	x := "CATGATG"
+	y := "CATG"
 	// x := "CATCCATG"
 	// y := "CATG"
-	y := "CATCCATG"
-	x := "GATG"
+	// y := "CATCCATG"
+	// x := "GATG"
 	m := New()
 	m.ComputeDistance(x, y)
 	m.Print()
