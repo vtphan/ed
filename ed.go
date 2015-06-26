@@ -100,18 +100,20 @@ func (m *Model) Print() {
 }
 
 func (m *Model) ComputeDistance() {
+   var mis int
 	for i := 1; i <= len(m.y); i++ {
 		for j := 1; j <= len(m.x); j++ {
 			if m.x[j-1] == m.y[i-1] {
-				m.d[i][j] = m.d[i-1][j-1]
+            mis = 0
+         } else {
+            mis = 1
+         }
+			if m.d[i-1][j-1]+mis <= m.d[i-1][j]+1 && m.d[i-1][j-1]+mis <= m.d[i][j-1]+1 {
+				m.d[i][j] = m.d[i-1][j-1] + mis
+			} else if m.d[i-1][j]+1 <= m.d[i-1][j-1]+mis && m.d[i-1][j] <= m.d[i][j-1] {
+				m.d[i][j] = m.d[i-1][j] + 1
 			} else {
-				if m.d[i-1][j-1] < m.d[i-1][j] && m.d[i-1][j-1] < m.d[i][j-1] {
-					m.d[i][j] = m.d[i-1][j-1] + 1
-				} else if m.d[i-1][j] < m.d[i-1][j-1] && m.d[i-1][j] < m.d[i][j-1] {
-					m.d[i][j] = m.d[i-1][j-1] + 1
-				} else {
-					m.d[i][j] = m.d[i][j-1] + 1
-				}
+				m.d[i][j] = m.d[i][j-1] + 1
 			}
 		}
 	}
@@ -160,16 +162,20 @@ func (m *Model) trace(i, j int) *Solution {
 }
 
 func main() {
-   // x := "CT"
-   // y := "C"
-   // x := "CATTAG"
-   // y := "CGGTAG"
-   // x := "CATTAG"
-   // y := "CTTAG"
+   // y := "CT"
+   // x := "C"
+   // y := "CATTAG"
+   // x := "CGGTAG"
+   // y := "CATTAG"
+   // x := "CTTAG"
    // x := "CATTAG"
    // y := "CAG"
-   x := "CATCCATG"
-   y := "CATG"
+   // y := "CATGATG"
+   // x := "CATG"
+   // y := "CATCCATG"
+   // x := "CATG"
+   y := "CATCCATG"
+   x := "GATG"
 	m := New(x, y)
 	m.ComputeDistance()
 	m.Print()
