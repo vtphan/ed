@@ -58,13 +58,11 @@ type Model struct {
 	d    [][]int
 }
 
-func New(x, y string) *Model {
-	m := new(Model)
-   m.Set(x,y)
-	return m
+func New() *Model {
+	return new(Model)
 }
 
-func (m *Model) Set(x, y string) {
+func (m *Model) Init(x, y string) {
    m.x = x
    m.y = y
    m.d = make([][]int, len(y)+1)
@@ -99,7 +97,8 @@ func (m *Model) Print() {
 	}
 }
 
-func (m *Model) ComputeDistance() {
+func (m *Model) ComputeDistance(x, y string) {
+   m.Init(x,y)
    var mis int
 	for i := 1; i <= len(m.y); i++ {
 		for j := 1; j <= len(m.x); j++ {
@@ -170,14 +169,14 @@ func main() {
    // x := "CTTAG"
    // x := "CATTAG"
    // y := "CAG"
-   // y := "CATGATG"
-   // x := "CATG"
+   x := "CATGATG"
+   y := "CATG"
+   // x := "CATCCATG"
+   // y := "CATG"
    // y := "CATCCATG"
-   // x := "CATG"
-   y := "CATCCATG"
-   x := "GATG"
-	m := New(x, y)
-	m.ComputeDistance()
+   // x := "GATG"
+	m := New()
+	m.ComputeDistance(x,y)
 	m.Print()
    solution := m.Trace()
    solution.Print()
